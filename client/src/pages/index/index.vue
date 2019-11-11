@@ -15,9 +15,7 @@
 			}
 		},
 		onLoad() {
-			uni.request({
-				url:"/api/activity"
-			})
+			this.api.activity()
 		},
 		methods: {
 

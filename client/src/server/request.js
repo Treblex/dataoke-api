@@ -42,26 +42,30 @@ export default class request{
      *  拦截器
      * @param {*} options 
      */
-    Interceptor(options){
+    async Interceptor(options){
        if(this.isDebug)console.log('%c 🚀🚀🚀new Request Start. -------------------------------','background:#fff;color:blue')
         let {url,method="POST",header={},data={},responseType='text',dataType='json'}=options
+       
         // 组装url
         url = this.config.baseUrl+options.url
         // header
-        let token=''
-        header= Object.assign(this.config.defaultOption.header||{},{token,...header})
+        // let token=''
+        header= Object.assign(this.config.defaultOption.header||{},{...header})
         // 默认配置
         options = Object.assign(options,{url,method,header,data,responseType,dataType})
-        if(this.isDebug)console.log('🔧 request配置:',options)
+       
         if(this.customInterceptor){
-            options = this.customInterceptor(options)
+            options = await this.customInterceptor(options)
         }
+        // console.log(options.type,'uploadFileStream',options.type == 'uploadFileStream')
         if('type' in options){
             // 默认上传方法，不带header
             if(options.type == 'uploadFileStream'){
                 delete options.header['Content-Type']
+                
             }
         }
+        if(this.isDebug)console.log('🔧 request配置:',options)
         return options;
     }
 
@@ -111,13 +115,22 @@ export default class request{
      * @param {*} options 
      */
     async request(options={}){
+        let isLoading  =  this.config.isLoading
+        if('isLoading' in options){
+            isLoading = options.isLoading
+            delete options.isLoading
+        }
+
+        if(isLoading)uni.showLoading({title:"加载中",mask:true})
         options = await this.Interceptor(options)
         return  new Promise((resolve,reject)=>{
             uni.request({
                 ...options
             }).then(response=>{
                 let [err,res]=response
-
+                setTimeout(() => {
+                    if(isLoading)uni.hideLoading()
+                }, 300);
                 // 正常
                 if(res){
                     if(this.isDebug)console.log('👌👌👌请求结果:',res)
@@ -142,18 +155,36 @@ export default class request{
      * @param {*} options 
      */
     async uploadAct(options={}){
+        
+        let isLoading  =  this.config.isLoading
+        if('isLoading' in options){
+            isLoading = options.isLoading
+            delete options.isLoading
+        }
+        
+        if(isLoading)uni.showLoading({title:"上传中",mask:true})
         options = await this.Interceptor(options)
         return new Promise((resolve,reject)=>{
             uni.uploadFile({
                 ...options
             }).then(response=>{
                 let [err,res]=response
-    
+                console.log(response)
+				setTimeout(() => {
+				    if(isLoading)uni.hideLoading()
+				}, 300);
                 // 正常
                 if(res){
                     if(this.isDebug)console.log('👌👌👌请求结果:',res)
-                    let _res = this.Responder(res)
-                    resolve(_res)
+					try{
+						res.data=JSON.parse(res.data)
+						let _res = this.Responder(res)
+						resolve(_res)
+					}catch(e){
+						//TODO handle the exception
+                        console.log(e)
+                        resolve('')
+					}
                 }
                 
                 // 错误
@@ -175,10 +206,17 @@ export default class request{
     get(url,option){
         return this.request({url,method:'GET',...option})
     }
+    // 表单类型 >>后台获取数据的方式不同 可能取不到参数
     post(url,option){
-        return this.request({url,method:'POST',...option})
+        return this.request({url,method:'POST',header:{'Content-Type':"application/x-www-form-urlencoded"},...option})
     }
-    delete(url,option){
+    // json类型 >>后台获取数据的方式不同 可能取不到参数
+    postJSON(url,option){
+        return this.request({url,method:'POST',header:{'Content-Type':"application/json"},...option})
+    }
+
+    // 下面三个未经测试 不常用
+    delete_(url,option){
         return this.request({url,method:'DELETE',...option})
     }
     put(url,option){
@@ -202,7 +240,7 @@ export default class request{
     uploadPayload(url,options){
         return this.uploadAct({url,header:{"Content-Type":"multipart/form-data"},...options})
     }
-    // fromDate形式
+    // fromData形式
     uploadFormData(url,options){
         return this.uploadAct({url,header:{"Content-Type":"application/x-www-form-urlencoded"},...options})
     }
