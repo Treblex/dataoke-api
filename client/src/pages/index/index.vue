@@ -15,7 +15,9 @@
 			}
 		},
 		onLoad() {
-
+			uni.request({
+				url:"/api/activity"
+			})
 		},
 		methods: {
 

@@ -71,5 +71,23 @@
     },
     "mp-qq" : {
         "usingComponents" : true
-    }
+    },
+	"h5" : {
+	    "template" : "template.html",
+	    "devServer" : {
+	        "port" : 8001,
+	        "disableHostCheck" : true,
+	        "proxy" : {
+	            "/api" : {
+	                // "target" : "http://192.168.0.196",
+	                "target" : "http://127.0.0.1:3000",
+	                "changeOrigin" : true,
+	                "secure" : false,
+	                "pathRewrite" : {
+	                    "^/api" : "/api"
+	                }
+	            }
+	        }
+	    }
+	}
 }
