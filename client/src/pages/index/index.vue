@@ -15,10 +15,15 @@
 			}
 		},
 		onLoad() {
-			this.api.activity()
+			this.init()
 		},
 		methods: {
-
+			init(){
+				Promise.all([
+					this.api.activity(),
+					this.api.category()
+				])
+			}
 		}
 	}
 </script>
