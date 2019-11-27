@@ -20,7 +20,18 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/api',(res,req,next)=>{
+  console.log('=============>>>>>>>>>>>');
+  console.log('==err==||AppBase 登录检测或一些其他的内容');
+  console.log('=============>>>>>>>>>>>');
+  if(true){
+    req.send('err 未登录什么的')
+    return;
+  }
+  next();
+})
 app.use('/api', apiRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -37,5 +48,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
+console.log('app running on http://127.0.0.1:3000')
 module.exports = app;
