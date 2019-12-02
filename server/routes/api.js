@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var factory = require('../util/CommodityFactory')
+var factory = require('../util/CommodityFactory');
 // 商品工厂对象
 let CommodityFactory = new factory({
   appSecret: '17eda35413998548b3fdebd31e6d2c51',
@@ -56,7 +56,7 @@ router.get('/get-brand-list', async function (req, res, next) {
 router.get('/search', async function (req, res, next) {
   let {type=1,pageId,pageSize=20,keyWords='',tmall=0,haitao=0,sort='total_sales'} = req.query
   let body = await CommodityFactory.search({type,pageId,pageSize,keyWords,tmall,haitao,sort})
-  res.send(body)
+  res.send(errCode('暂未开放'))
 })
 
 

@@ -55,7 +55,7 @@ class factory {
     }
     // 超级搜索 TODO:接口有些问题
     search({type=0,pageId,pageSize=10,keyWords='',tmall,haitao,sort='total_sales'}){
-        return this.request_({url:"/api/goods/list-super-goods",requestData:{type,pageId,pageSize,keyWords,tmall,haitao,sort},version:'v1.1.0'})
+        return this.request_({url:"/api/goods/list-super-goods",requestData:{type,pageId,pageSize,keyWords,tmall,haitao,sort},version:'v1.1.1'})
     }
     // 单品详情
     goodDetail({id,goodsId}){
@@ -165,7 +165,7 @@ class factory {
                     resolve(body)
                 } else {
                     //输出返回的内容
-                    // console.log('接口调用失败',response);
+                    console.log('接口调用失败',response);
                     reject(body)
                 }
             })
