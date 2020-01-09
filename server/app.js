@@ -1,14 +1,16 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var bodyParser = require('body-parser')
+var createError = require('http-errors');//报错
+var express = require('express');//express框架
+var path = require('path');//node模块
+
+
+var cookieParser = require('cookie-parser');//cookie中间件
+var logger = require('morgan');//日志
+var bodyParser = require('body-parser')//request body中间件
 // var log = require('npmlogger');
-var indexRouter = require('./routes/index');
-var apiRouter = require('./routes/api');
-var articleRouter  = require('./routes/article')
-var loginRouter = require('./routes/user/login')
+var indexRouter = require('./routes/index'); //index路由
+var apiRouter = require('./routes/api'); //api路由
+var articleRouter  = require('./routes/article') //文章路由
+var loginRouter = require('./routes/user/login') //用户登陆
 var app = express();
 
 // 模版引擎
